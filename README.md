@@ -18,12 +18,19 @@ Before drawing conclusions, import verifiable data from sources such as:
 
 The dashboard treats the FOMC event CSV and Taiwan sector index CSV as two separate sources. If only one file is imported, the site labels the analysis as mixed imported and demo data, and it must not be used as formal research evidence.
 
+Official-source notes are in `docs/official-data-sources.md`. Empty formal templates are provided at:
+
+- `data/fomc_events_official_template.csv`
+- `data/twse_sector_prices_official_template.csv`
+
 The research-readiness gate blocks formal use until:
 
 - Both required CSV files are imported by the user.
 - Each FOMC event has a source label.
+- Each FOMC event has `rate_change_bp`.
 - `decision_type` is one of `hike`, `hold`, or `cut`.
 - The Taiwan price dataset includes `TAIEX` as the benchmark.
+- Each Taiwan index price row has a source label.
 - Every selected event has enough trading days for the configured event windows.
 
 ## CSV Data Contract
@@ -33,26 +40,24 @@ The research-readiness gate blocks formal use until:
 Required columns:
 
 ```csv
-event_date,decision_type,rate_change,policy_tone,source
-2022-03-16,hike,0.25,hawkish,Federal Reserve
+event_id,event_date,decision_type,rate_change_bp,policy_tone,target_rate_lower,target_rate_upper,source
 ```
 
 Rules:
 
 - `event_date` uses `YYYY-MM-DD`.
 - `decision_type` should be `hike`, `hold`, or `cut`.
-- `rate_change` is percentage points, such as `0.25`.
+- `rate_change_bp` is basis points, such as `25`, `0`, or `-25`.
 - `policy_tone` is a research classification written by the researcher.
-- `source` should identify the official page, document, or dataset.
+- `target_rate_lower` and `target_rate_upper` describe the post-meeting target range.
+- `source` should identify the official Federal Reserve page, statement, or document.
 
 ### Taiwan Sector Index Prices CSV
 
 Required columns:
 
 ```csv
-date,index_name,close
-2022-03-17,TAIEX,17500.00
-2022-03-17,Electronics,850.00
+date,index_name,close,source
 ```
 
 Rules:
@@ -60,6 +65,7 @@ Rules:
 - `date` uses `YYYY-MM-DD`.
 - `index_name` must include the benchmark index `TAIEX`.
 - `close` must be a positive number.
+- `source` should identify the official TWSE page, report, or downloaded CSV.
 - Every selected sector needs enough trading days before and after each event window.
 
 ## Method

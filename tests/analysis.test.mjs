@@ -47,12 +47,14 @@ test("calculates event study rows and benchmark-relative excess return", () => {
     {
       event_date: "2022-03-16",
       decision_type: "hike",
+      rate_change_bp: 25,
       policy_tone: "hawkish",
       source: "Federal Reserve sample"
     }
   ];
 
-  const rows = calculateEventStudy(events, priceRows, { benchmarkName: "TAIEX", windows: [1, 3] });
+  const sourcedPrices = priceRows.map((row) => ({ ...row, source: `Source for ${row.index_name}` }));
+  const rows = calculateEventStudy(events, sourcedPrices, { benchmarkName: "TAIEX", windows: [1, 3] });
   const electronicsT1 = rows.find((row) => row.index_name === "Electronics" && row.window === 1);
 
   assert.equal(rows.length, 6);
@@ -60,6 +62,10 @@ test("calculates event study rows and benchmark-relative excess return", () => {
   assert.equal(electronicsT1.return_rate, 212 / 202 - 1);
   assert.equal(electronicsT1.benchmark_return, 103 / 101 - 1);
   assert.equal(electronicsT1.excess_return, electronicsT1.return_rate - electronicsT1.benchmark_return);
+  assert.equal(electronicsT1.rate_change_bp, 25);
+  assert.equal(electronicsT1.event_source, "Federal Reserve sample");
+  assert.equal(electronicsT1.price_source, "Source for Electronics");
+  assert.equal(electronicsT1.benchmark_source, "Source for TAIEX");
 });
 
 test("calculates max drawdown from the running peak", () => {

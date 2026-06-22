@@ -157,6 +157,7 @@ function renderTable(rows) {
         <td>${escapeHtml(row.event_date)}</td>
         <td>${escapeHtml(row.tw_event_trade_date)}</td>
         <td>${escapeHtml(decisionLabel(row.decision_type))}</td>
+        <td class="numeric">${formatBasisPoints(row.rate_change_bp)}</td>
         <td>${escapeHtml(row.index_name)}</td>
         <td>T+${row.window}</td>
         <td class="numeric ${valueClass(row.return_rate)}">${formatSignedPercent(row.return_rate)}</td>
@@ -310,12 +311,15 @@ function exportRows() {
     { label: "event_date", value: (row) => row.event_date },
     { label: "tw_event_trade_date", value: (row) => row.tw_event_trade_date },
     { label: "decision_type", value: (row) => row.decision_type },
+    { label: "rate_change_bp", value: (row) => row.rate_change_bp },
     { label: "index_name", value: (row) => row.index_name },
     { label: "window", value: (row) => `T+${row.window}` },
     { label: "return_rate", value: (row) => row.return_rate },
     { label: "benchmark_return", value: (row) => row.benchmark_return },
     { label: "excess_return", value: (row) => row.excess_return },
-    { label: "source", value: (row) => row.source }
+    { label: "event_source", value: (row) => row.event_source || row.source },
+    { label: "price_source", value: (row) => row.price_source },
+    { label: "benchmark_source", value: (row) => row.benchmark_source }
   ]);
   const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -361,6 +365,12 @@ function valueClass(value) {
   if (value > 0) return "positive";
   if (value < 0) return "negative";
   return "";
+}
+
+function formatBasisPoints(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "—";
+  return number > 0 ? `+${formatNumber(number, 0)}` : formatNumber(number, 0);
 }
 
 function userSafeError(error) {

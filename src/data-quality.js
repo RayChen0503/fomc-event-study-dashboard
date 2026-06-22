@@ -15,6 +15,8 @@ export function assessResearchReadiness({
     checkBasicValidation(validation),
     checkEventSources(events),
     checkDecisionTypes(events),
+    checkRateChanges(events),
+    checkPriceSources(prices),
     checkBenchmark(prices, benchmarkName)
   ];
 
@@ -49,9 +51,9 @@ function checkBasicValidation(validation) {
 }
 
 function checkEventSources(events) {
-  const missing = events.filter((event) => String(event.source || "").trim() === "").length;
-  if (missing === 0) return pass("event-sources", "事件來源可追溯", "每筆 FOMC 事件皆有來源標示。");
-  return fail("event-sources", "事件來源可追溯", `${missing} 筆 FOMC 事件缺少來源標示。`);
+  const invalid = events.filter((event) => !isVerifiableUrl(event.source)).length;
+  if (invalid === 0) return pass("event-sources", "事件來源可追溯", "每筆 FOMC 事件皆有可驗證 URL。");
+  return fail("event-sources", "事件來源可追溯", `${invalid} 筆 FOMC 事件缺少可驗證 URL。`);
 }
 
 function checkDecisionTypes(events) {
@@ -60,10 +62,31 @@ function checkDecisionTypes(events) {
   return fail("decision-types", "利率決策分類", `${invalid.length} 筆事件的 decision_type 不屬於 hike、hold 或 cut。`);
 }
 
+function checkRateChanges(events) {
+  const missing = events.filter((event) => !hasFiniteRateChange(event)).length;
+  if (missing === 0) return pass("rate-change", "利率變動欄位", "每筆 FOMC 事件皆有 rate_change_bp，可作為政策變數。");
+  return fail("rate-change", "利率變動欄位", `${missing} 筆 FOMC 事件缺少 rate_change_bp。`);
+}
+
+function checkPriceSources(prices) {
+  const invalid = prices.filter((row) => !isVerifiableUrl(row.source)).length;
+  if (invalid === 0) return pass("price-sources", "價格來源可追溯", "每筆指數價格皆有可驗證 URL。");
+  return fail("price-sources", "價格來源可追溯", `${invalid} 筆指數價格缺少可驗證 URL。`);
+}
+
 function checkBenchmark(prices, benchmarkName) {
   const hasBenchmark = prices.some((row) => String(row.index_name || "").trim() === benchmarkName);
   if (hasBenchmark) return pass("benchmark", "大盤基準指數", `資料包含 ${benchmarkName}，可計算超額報酬。`);
   return fail("benchmark", "大盤基準指數", `資料缺少 ${benchmarkName}，無法計算相對大盤超額報酬。`);
+}
+
+function hasFiniteRateChange(event) {
+  const value = event.rate_change_bp;
+  return value !== "" && value != null && Number.isFinite(Number(value));
+}
+
+function isVerifiableUrl(value) {
+  return /^https?:\/\//i.test(String(value || "").trim());
 }
 
 function checkWindowCoverage({ events, prices, benchmarkName, windows, canCalculate }) {

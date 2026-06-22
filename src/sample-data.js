@@ -10,10 +10,10 @@ export const sampleMetadata = {
 };
 
 export const sampleEvents = [
-  { event_id: "E001", event_date: "2022-03-16", decision_type: "hike", rate_change: 0.25, policy_tone: "hawkish", source: "Synthetic sample" },
-  { event_id: "E002", event_date: "2022-05-04", decision_type: "hike", rate_change: 0.50, policy_tone: "hawkish", source: "Synthetic sample" },
-  { event_id: "E003", event_date: "2023-09-20", decision_type: "hold", rate_change: 0, policy_tone: "higher-for-longer", source: "Synthetic sample" },
-  { event_id: "E004", event_date: "2024-09-18", decision_type: "cut", rate_change: -0.25, policy_tone: "dovish", source: "Synthetic sample" }
+  { event_id: "E001", event_date: "2022-03-16", decision_type: "hike", rate_change_bp: 25, rate_change: 0.25, policy_tone: "hawkish", source: "Synthetic sample" },
+  { event_id: "E002", event_date: "2022-05-04", decision_type: "hike", rate_change_bp: 50, rate_change: 0.50, policy_tone: "hawkish", source: "Synthetic sample" },
+  { event_id: "E003", event_date: "2023-09-20", decision_type: "hold", rate_change_bp: 0, rate_change: 0, policy_tone: "higher-for-longer", source: "Synthetic sample" },
+  { event_id: "E004", event_date: "2024-09-18", decision_type: "cut", rate_change_bp: -25, rate_change: -0.25, policy_tone: "dovish", source: "Synthetic sample" }
 ];
 
 const dates = [
@@ -35,6 +35,7 @@ export const samplePrices = Object.entries(series).flatMap(([indexName, closes])
   dates.map((date, index) => ({
     date,
     index_name: indexName,
-    close: closes[index]
+    close: closes[index],
+    source: "Synthetic sample"
   }))
 ));

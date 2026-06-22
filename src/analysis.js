@@ -89,7 +89,8 @@ export function groupPricesByIndex(priceRows) {
     const normalized = {
       date: normalizeDate(row.date),
       index_name: indexName,
-      close: toNumber(row.close)
+      close: toNumber(row.close),
+      source: row.source || ""
     };
     if (!groups.has(indexName)) groups.set(indexName, []);
     groups.get(indexName).push(normalized);
@@ -134,6 +135,7 @@ export function calculateEventStudy(events, priceRows, options = {}) {
     const benchmarkReturns = new Map(
       windows.map((window) => [window, calculateWindowReturn(benchmarkSeries, twEventTradeDate, window)])
     );
+    const benchmarkSource = sourceForDate(benchmarkSeries, twEventTradeDate);
 
     groupedPrices.forEach((series, indexName) => {
       windows.forEach((window) => {
@@ -145,12 +147,16 @@ export function calculateEventStudy(events, priceRows, options = {}) {
           tw_event_trade_date: twEventTradeDate,
           decision_type: event.decision_type,
           policy_tone: event.policy_tone,
+          rate_change_bp: event.rate_change_bp ?? event.rate_change ?? "",
           rate_change: event.rate_change ?? "",
           index_name: indexName,
           window,
           return_rate: returnRate,
           benchmark_return: benchmarkReturn,
           excess_return: returnRate - benchmarkReturn,
+          event_source: event.source || "",
+          price_source: sourceForDate(series, twEventTradeDate),
+          benchmark_source: benchmarkSource,
           source: event.source || ""
         });
       });
@@ -158,6 +164,10 @@ export function calculateEventStudy(events, priceRows, options = {}) {
   });
 
   return results;
+}
+
+function sourceForDate(series, date) {
+  return series.find((row) => normalizeDate(row.date) === normalizeDate(date))?.source || "";
 }
 
 export function calculateMaxDrawdown(series) {
