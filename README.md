@@ -46,8 +46,9 @@ Primary user flow:
 1. Open the dashboard.
 2. Click `載入官方資料集`.
 3. Confirm `研究可用性檢核` passes.
-4. Adjust event window, decision type, or sector filters.
-5. Export the event-return table for the paper's analysis section.
+4. Read `分析摘要` to confirm the active view, sample size, main sector signals, and drawdown pressure.
+5. Adjust event window, decision type, or sector filters.
+6. Export the event-return table for the paper's analysis section.
 
 Manual CSV import remains available as a backup path for revised datasets.
 

@@ -8,6 +8,7 @@ import {
 import { parseCsv, toCsv } from "./csv.js";
 import { assessResearchReadiness } from "./data-quality.js";
 import { formatDateTime, formatNumber, formatPercent, formatSignedPercent } from "./format.js";
+import { buildInsightSummary } from "./insights.js";
 import { buildCombinedMetadata } from "./metadata.js";
 import { sampleEvents, sampleMetadata, samplePrices } from "./sample-data.js";
 
@@ -38,6 +39,21 @@ const elements = {
   pricesInput: document.querySelector("#pricesInput"),
   nextStepTitle: document.querySelector("#nextStepTitle"),
   nextStepDetail: document.querySelector("#nextStepDetail"),
+  activeViewChip: document.querySelector("#activeViewChip"),
+  sampleScopeValue: document.querySelector("#sampleScopeValue"),
+  sampleScopeDetail: document.querySelector("#sampleScopeDetail"),
+  strongestSectorLabel: document.querySelector("#strongestSectorLabel"),
+  strongestSectorValue: document.querySelector("#strongestSectorValue"),
+  strongestSectorDetail: document.querySelector("#strongestSectorDetail"),
+  weakestSectorLabel: document.querySelector("#weakestSectorLabel"),
+  weakestSectorValue: document.querySelector("#weakestSectorValue"),
+  weakestSectorDetail: document.querySelector("#weakestSectorDetail"),
+  drawdownPressureLabel: document.querySelector("#drawdownPressureLabel"),
+  drawdownPressureValue: document.querySelector("#drawdownPressureValue"),
+  drawdownPressureDetail: document.querySelector("#drawdownPressureDetail"),
+  analysisNarrative: document.querySelector("#analysisNarrative"),
+  resultCountChip: document.querySelector("#resultCountChip"),
+  tableScopeDetail: document.querySelector("#tableScopeDetail"),
   windowChip: document.querySelector("#windowChip"),
   excessChart: document.querySelector("#excessChart"),
   drawdownChart: document.querySelector("#drawdownChart"),
@@ -111,6 +127,24 @@ function renderReadiness(readiness) {
       </div>
     </div>`
   )).join("");
+}
+
+function renderAnalysisBrief(summary, rowCount = 0) {
+  elements.activeViewChip.textContent = `目前視角：${summary.viewLabel}`;
+  elements.sampleScopeValue.textContent = summary.sample.value;
+  elements.sampleScopeDetail.textContent = summary.sample.detail;
+  renderMetric(elements.strongestSectorLabel, elements.strongestSectorValue, elements.strongestSectorDetail, summary.strongest);
+  renderMetric(elements.weakestSectorLabel, elements.weakestSectorValue, elements.weakestSectorDetail, summary.weakest);
+  renderMetric(elements.drawdownPressureLabel, elements.drawdownPressureValue, elements.drawdownPressureDetail, summary.drawdown);
+  elements.analysisNarrative.textContent = summary.narrative;
+  elements.resultCountChip.textContent = `${rowCount} 筆觀察值`;
+  elements.tableScopeDetail.textContent = `目前視角：${summary.viewLabel}`;
+}
+
+function renderMetric(labelElement, valueElement, detailElement, metric) {
+  labelElement.textContent = metric.label;
+  valueElement.textContent = metric.value;
+  detailElement.textContent = metric.detail;
 }
 
 function renderSectorOptions() {
@@ -245,6 +279,14 @@ function aggregateRows(rows) {
 function render() {
   const validation = validateInputs(state.events, state.prices);
   updateStatus(validation);
+  const emptyInsight = buildInsightSummary({
+    rows: [],
+    sensitivity: [],
+    drawdowns: [],
+    selectedWindow: state.selectedWindow,
+    decisionFilter: state.decisionFilter,
+    sectorFilter: state.sectorFilter
+  });
   renderReadiness(assessResearchReadiness({
     events: state.events,
     prices: state.prices,
@@ -256,6 +298,7 @@ function render() {
 
   if (!validation.ok) {
     state.lastRows = [];
+    renderAnalysisBrief(emptyInsight, 0);
     renderKpis([], [], []);
     renderRanking([]);
     renderTable([]);
@@ -268,6 +311,7 @@ function render() {
     allRows = calculateEventStudy(filteredEvents(), state.prices, { benchmarkName: "TAIEX", windows: [1, 3, 5, 10] });
   } catch (error) {
     setMessages([userSafeError(error)]);
+    renderAnalysisBrief(emptyInsight, 0);
     renderTable([]);
     renderCharts([], []);
     return;
@@ -280,6 +324,14 @@ function render() {
   const drawdowns = calculateDrawdowns(state.prices).filter((item) => state.sectorFilter === "all" || item.index_name === state.sectorFilter);
 
   state.lastRows = rows;
+  renderAnalysisBrief(buildInsightSummary({
+    rows,
+    sensitivity,
+    drawdowns,
+    selectedWindow: state.selectedWindow,
+    decisionFilter: state.decisionFilter,
+    sectorFilter: state.sectorFilter
+  }), rows.length);
   renderKpis(rows, sensitivity, drawdowns);
   renderRanking(sensitivity);
   renderTable(rows);

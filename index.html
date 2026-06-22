@@ -104,6 +104,46 @@
         </article>
       </section>
 
+      <section class="panel analysis-brief" aria-labelledby="analysisBriefTitle">
+        <div class="panel-heading">
+          <div>
+            <p class="section-label">Result Interpretation</p>
+            <h2 id="analysisBriefTitle">分析摘要</h2>
+            <p>把目前篩選條件轉成可寫入小論文分析章的初步觀察。</p>
+          </div>
+          <span class="chip" id="activeViewChip">目前視角：T+5 / 全部決策 / 全部類股</span>
+        </div>
+        <div class="insight-strip" aria-label="主要指標解讀">
+          <div class="insight-item">
+            <span>樣本範圍</span>
+            <strong id="sampleScopeValue">—</strong>
+            <small id="sampleScopeDetail">尚未計算</small>
+          </div>
+          <div class="insight-item">
+            <span>相對大盤最強</span>
+            <strong id="strongestSectorLabel">—</strong>
+            <b id="strongestSectorValue">—</b>
+            <small id="strongestSectorDetail">尚未計算</small>
+          </div>
+          <div class="insight-item">
+            <span>相對大盤最弱</span>
+            <strong id="weakestSectorLabel">—</strong>
+            <b id="weakestSectorValue">—</b>
+            <small id="weakestSectorDetail">尚未計算</small>
+          </div>
+          <div class="insight-item">
+            <span>最大回撤壓力</span>
+            <strong id="drawdownPressureLabel">—</strong>
+            <b id="drawdownPressureValue">—</b>
+            <small id="drawdownPressureDetail">尚未計算</small>
+          </div>
+        </div>
+        <div class="finding-note">
+          <p class="section-label">主要發現</p>
+          <p id="analysisNarrative">載入官方資料集後，這裡會顯示目前視角下的主要觀察。</p>
+        </div>
+      </section>
+
       <section class="kpi-grid" aria-label="研究摘要">
         <article class="kpi-card">
           <span class="kpi-label">事件數</span>
@@ -169,10 +209,14 @@
       </section>
 
       <section class="panel">
-        <div class="panel-heading">
+        <div class="panel-heading table-heading">
           <div>
             <h2>事件報酬明細</h2>
             <p>所有數字由瀏覽器端計算；正式研究前請匯入官方資料。</p>
+          </div>
+          <div class="table-tools" aria-label="目前表格狀態">
+            <span class="chip" id="resultCountChip">0 筆觀察值</span>
+            <span id="tableScopeDetail">目前視角：T+5 / 全部決策 / 全部類股</span>
           </div>
         </div>
         <div class="table-wrap">

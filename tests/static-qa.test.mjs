@@ -14,6 +14,9 @@ const validHtml = `<!doctype html>
   <section id="dataStatus" aria-live="polite">資料狀態</section>
   <section>研究流程</section>
   <section>下一步</section>
+  <section>分析摘要</section>
+  <section>目前視角</section>
+  <section>主要發現</section>
   <button type="button">載入官方資料集</button>
   <button type="button">匯出事件報酬 CSV</button>
   <svg role="img" aria-label="事件後超額報酬長條圖"></svg>
@@ -78,6 +81,17 @@ test("fails when guided workflow signals are missing", () => {
 
   assert.equal(result.ok, false);
   assert.match(result.failures.join(" "), /research workflow/);
+});
+
+test("fails when result interpretation signals are missing", () => {
+  const result = runStaticQa({
+    html: validHtml.replace("分析摘要", "").replace("目前視角", "").replace("主要發現", ""),
+    css: validCss,
+    scripts: [""]
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join(" "), /analysis summary/);
 });
 
 test("fails when inline event handlers are present", () => {

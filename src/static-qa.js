@@ -9,6 +9,9 @@ export function runStaticQa({ html = "", css = "", scripts = [] } = {}) {
   requireSignal(failures, html.includes("研究流程"), "Dashboard must include a research workflow section.");
   requireSignal(failures, html.includes("下一步"), "Dashboard must include a next-step signal.");
   requireSignal(failures, html.includes("載入官方資料集"), "Dashboard must include an official dataset loading action.");
+  requireSignal(failures, html.includes("分析摘要"), "Dashboard must include an analysis summary section.");
+  requireSignal(failures, html.includes("目前視角"), "Dashboard must include an active-view label.");
+  requireSignal(failures, html.includes("主要發現"), "Dashboard must include a key finding narrative.");
   requireSignal(failures, /id=["']dataStatus["'][^>]+aria-live=["']polite["']/i.test(html), "Data status must use aria-live=\"polite\".");
   requireSignal(failures, /id=["']readinessList["'][^>]+aria-live=["']polite["']/i.test(html), "Research readiness list must use aria-live=\"polite\".");
   requireSignal(failures, /<svg[^>]+role=["']img["'][^>]+aria-label=/i.test(html), "Charts must expose image role and aria-label.");

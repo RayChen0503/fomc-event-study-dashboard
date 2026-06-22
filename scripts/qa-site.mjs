@@ -13,6 +13,7 @@ const scriptFiles = [
   "src/csv.js",
   "src/data-quality.js",
   "src/format.js",
+  "src/insights.js",
   "src/metadata.js",
   "src/sample-data.js"
 ];
