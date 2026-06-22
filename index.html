@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FOMC event study dashboard for Taiwan sector index research.">
+  <title>FOMC Event Study Dashboard</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-main">
+      <div>
+        <p class="eyebrow">Financial Research Tool</p>
+        <h1>FOMC Event Study Dashboard</h1>
+        <p class="lede">分析美國利率決策事件後，臺灣產業類股的短期報酬、相對大盤超額報酬與最大回撤。</p>
+      </div>
+      <div class="header-actions" aria-label="主要操作">
+        <button class="button secondary" id="resetDemoButton" type="button">載入示範資料</button>
+        <button class="button primary" id="exportButton" type="button">匯出事件報酬 CSV</button>
+      </div>
+    </div>
+    <section class="status-banner" id="dataStatus" aria-live="polite">
+      <strong>資料狀態：</strong><span>初始化中</span>
+    </section>
+  </header>
+
+  <main class="dashboard">
+    <aside class="controls-panel" aria-labelledby="controlsTitle">
+      <h2 id="controlsTitle">研究設定</h2>
+      <div class="field">
+        <label for="windowSelect">事件觀察窗</label>
+        <select id="windowSelect">
+          <option value="1">T+1</option>
+          <option value="3">T+3</option>
+          <option value="5" selected>T+5</option>
+          <option value="10">T+10</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="decisionFilter">利率決策類型</label>
+        <select id="decisionFilter">
+          <option value="all">全部事件</option>
+          <option value="hike">升息</option>
+          <option value="hold">維持利率</option>
+          <option value="cut">降息</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="sectorFilter">產業指數</label>
+        <select id="sectorFilter">
+          <option value="all">全部產業</option>
+        </select>
+      </div>
+      <div class="upload-grid">
+        <label class="upload-card">
+          <span>匯入 FOMC 事件 CSV</span>
+          <input id="eventsInput" type="file" accept=".csv,text/csv">
+        </label>
+        <label class="upload-card">
+          <span>匯入產業指數 CSV</span>
+          <input id="pricesInput" type="file" accept=".csv,text/csv">
+        </label>
+      </div>
+      <div class="method-note">
+        <h3>方法摘要</h3>
+        <p>FOMC 公布後的第一個臺灣交易日視為市場反應日；報酬率皆以事件日前一交易日收盤指數為基準。</p>
+      </div>
+    </aside>
+
+    <section class="content-stack">
+      <section class="kpi-grid" aria-label="研究摘要">
+        <article class="kpi-card">
+          <span class="kpi-label">事件數</span>
+          <strong id="eventCount">—</strong>
+          <small>目前篩選範圍</small>
+        </article>
+        <article class="kpi-card">
+          <span class="kpi-label">最高敏感產業</span>
+          <strong id="topSensitive">—</strong>
+          <small>依平均絕對超額報酬</small>
+        </article>
+        <article class="kpi-card">
+          <span class="kpi-label">最大回撤</span>
+          <strong id="worstDrawdown">—</strong>
+          <small>研究期間內最低風險指標</small>
+        </article>
+        <article class="kpi-card warning">
+          <span class="kpi-label">合規提醒</span>
+          <strong>非投資建議</strong>
+          <small>僅作研究方法展示</small>
+        </article>
+      </section>
+
+      <section class="panel" id="messagePanel" hidden>
+        <h2>狀態訊息</h2>
+        <div id="messages"></div>
+      </section>
+
+      <section class="chart-grid">
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <h2>事件後超額報酬</h2>
+              <p>相對臺灣加權指數，觀察各產業在選定事件窗的平均表現。</p>
+            </div>
+            <span class="chip" id="windowChip">T+5</span>
+          </div>
+          <div class="chart-frame">
+            <svg id="excessChart" role="img" aria-label="事件後超額報酬長條圖"></svg>
+          </div>
+        </article>
+        <article class="panel">
+          <div class="panel-heading">
+            <div>
+              <h2>產業最大回撤</h2>
+              <p>衡量研究期間內自前高下跌的最大幅度。</p>
+            </div>
+          </div>
+          <div class="chart-frame">
+            <svg id="drawdownChart" role="img" aria-label="產業最大回撤長條圖"></svg>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>敏感度排名</h2>
+            <p>平均絕對超額報酬越高，代表事件窗內相對大盤偏離越明顯。</p>
+          </div>
+        </div>
+        <div id="rankingList" class="ranking-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>事件報酬明細</h2>
+            <p>所有數字由瀏覽器端計算；正式研究前請匯入官方資料。</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>FOMC 日期</th>
+                <th>臺灣反應日</th>
+                <th>決策</th>
+                <th>產業</th>
+                <th>事件窗</th>
+                <th>產業報酬</th>
+                <th>大盤報酬</th>
+                <th>超額報酬</th>
+              </tr>
+            </thead>
+            <tbody id="eventTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel disclosure-panel">
+        <h2>資料來源與限制</h2>
+        <dl id="sourceDetails"></dl>
+        <p>本工具不提供個人化投資建議，不保證任何報酬，亦不應單獨作為買賣決策依據。正式研究須使用 Federal Reserve 與臺灣證券交易所等可驗證資料來源。</p>
+      </section>
+
+      <section class="panel readiness-panel" aria-labelledby="readinessTitle">
+        <div class="panel-heading">
+          <div>
+            <h2 id="readinessTitle">研究可用性檢核</h2>
+            <p>此檢核只判斷資料是否足以支撐小論文分析，不代表任何投資建議。</p>
+          </div>
+          <span class="chip" id="readinessSummary">檢核中</span>
+        </div>
+        <div class="readiness-list" id="readinessList" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+
+  <template id="emptyRowTemplate">
+    <tr>
+      <td colspan="8" class="empty-cell">目前沒有符合篩選條件的事件報酬資料。</td>
+    </tr>
+  </template>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

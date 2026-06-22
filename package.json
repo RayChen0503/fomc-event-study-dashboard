@@ -1,0 +1,13 @@
+{
+  "name": "fomc-event-study-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/check-site.mjs",
+    "lint": "node scripts/check-site.mjs",
+    "qa": "node scripts/qa-site.mjs",
+    "typecheck": "node --check src/app.js && node --check src/analysis.js && node --check src/csv.js && node --check src/data-quality.js && node --check src/format.js && node --check src/metadata.js && node --check src/static-qa.js && node --check scripts/check-site.mjs && node --check scripts/qa-site.mjs"
+  }
+}
