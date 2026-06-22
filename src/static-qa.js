@@ -12,6 +12,10 @@ export function runStaticQa({ html = "", css = "", scripts = [] } = {}) {
   requireSignal(failures, html.includes("分析摘要"), "Dashboard must include an analysis summary section.");
   requireSignal(failures, html.includes("目前視角"), "Dashboard must include an active-view label.");
   requireSignal(failures, html.includes("主要發現"), "Dashboard must include a key finding narrative.");
+  requireSignal(failures, html.includes("圖例"), "Dashboard must include chart legend guidance.");
+  requireSignal(failures, html.includes("計算口徑"), "Dashboard must include chart calculation notes.");
+  requireSignal(failures, html.includes("排序依據"), "Dashboard must include a table sort control.");
+  requireSignal(failures, html.includes("<th>來源</th>"), "Event table must include a source column.");
   requireSignal(failures, /id=["']dataStatus["'][^>]+aria-live=["']polite["']/i.test(html), "Data status must use aria-live=\"polite\".");
   requireSignal(failures, /id=["']readinessList["'][^>]+aria-live=["']polite["']/i.test(html), "Research readiness list must use aria-live=\"polite\".");
   requireSignal(failures, /<svg[^>]+role=["']img["'][^>]+aria-label=/i.test(html), "Charts must expose image role and aria-label.");

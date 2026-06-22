@@ -15,7 +15,8 @@ const scriptFiles = [
   "src/format.js",
   "src/insights.js",
   "src/metadata.js",
-  "src/sample-data.js"
+  "src/sample-data.js",
+  "src/table-view.js"
 ];
 const scripts = scriptFiles.map((file) => readFileSync(join(root, file), "utf8"));
 const result = runStaticQa({ html, css, scripts });

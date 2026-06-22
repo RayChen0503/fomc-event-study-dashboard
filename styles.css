@@ -438,6 +438,20 @@ select {
   text-align: right;
 }
 
+.sort-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.sort-control select {
+  min-width: 150px;
+  padding: 7px 32px 7px 10px;
+  font-size: 12px;
+}
+
 .chip {
   flex: 0 0 auto;
   border-radius: 999px;
@@ -523,6 +537,41 @@ svg {
   min-height: 280px;
 }
 
+.chart-notes {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.chart-notes p {
+  margin: 0;
+}
+
+.chart-notes strong {
+  margin-right: 8px;
+  color: var(--ink);
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin: 0 4px 0 8px;
+  vertical-align: -1px;
+}
+
+.legend-swatch.positive {
+  background: var(--accent-strong);
+}
+
+.legend-swatch.negative {
+  background: var(--negative);
+}
+
 .ranking-list {
   display: grid;
   gap: 10px;
@@ -573,7 +622,7 @@ svg {
 
 table {
   width: 100%;
-  min-width: 980px;
+  min-width: 1120px;
   border-collapse: collapse;
   background: #fff;
 }
@@ -596,6 +645,22 @@ th {
 td.numeric {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+.source-pill {
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: var(--muted);
+  background: var(--surface-soft);
+  font-size: 12px;
+  font-weight: 800;
+  vertical-align: middle;
 }
 
 .positive {
@@ -716,6 +781,15 @@ td.numeric {
   .table-tools {
     justify-content: flex-start;
     text-align: left;
+  }
+
+  .sort-control {
+    width: 100%;
+    display: grid;
+  }
+
+  .sort-control select {
+    width: 100%;
   }
 
   .ranking-item {

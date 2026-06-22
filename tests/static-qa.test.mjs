@@ -17,6 +17,10 @@ const validHtml = `<!doctype html>
   <section>分析摘要</section>
   <section>目前視角</section>
   <section>主要發現</section>
+  <section>圖例</section>
+  <section>計算口徑</section>
+  <label>排序依據</label>
+  <th>來源</th>
   <button type="button">載入官方資料集</button>
   <button type="button">匯出事件報酬 CSV</button>
   <svg role="img" aria-label="事件後超額報酬長條圖"></svg>
@@ -92,6 +96,17 @@ test("fails when result interpretation signals are missing", () => {
 
   assert.equal(result.ok, false);
   assert.match(result.failures.join(" "), /analysis summary/);
+});
+
+test("fails when chart and table professionalism signals are missing", () => {
+  const result = runStaticQa({
+    html: validHtml.replace("圖例", "").replace("計算口徑", "").replace("排序依據", "").replace("<th>來源</th>", ""),
+    css: validCss,
+    scripts: [""]
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join(" "), /chart legend/);
 });
 
 test("fails when inline event handlers are present", () => {

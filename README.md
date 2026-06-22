@@ -48,7 +48,9 @@ Primary user flow:
 3. Confirm `研究可用性檢核` passes.
 4. Read `分析摘要` to confirm the active view, sample size, main sector signals, and drawdown pressure.
 5. Adjust event window, decision type, or sector filters.
-6. Export the event-return table for the paper's analysis section.
+6. Use `排序依據` to scan rows by date, sector, excess return, or absolute excess-return magnitude.
+7. Check chart `圖例` / `計算口徑` and the table `來源` column before exporting.
+8. Export the event-return table for the paper's analysis section.
 
 Manual CSV import remains available as a backup path for revised datasets.
 

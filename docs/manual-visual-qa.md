@@ -10,7 +10,9 @@ Open `http://127.0.0.1:65260/`.
 - The first screen also shows `研究工作台`, `下一步`, and a visible `載入官方資料集` action.
 - The left controls read as a guided `研究流程`, not only loose filters.
 - `分析摘要` appears above the KPI cards and shows `目前視角`, sample scope, sector signals, drawdown pressure, and `主要發現`.
+- Each chart shows `圖例` and `計算口徑` text near the chart, so users can interpret positive/negative values without guessing.
 - The event-return table heading shows the current observation count and active filter scope.
+- The event-return table includes `排序依據` and a compact `來源` column; long source URLs should not stretch the table.
 - The data status banner clearly says whether the dataset is demo, mixed, or user-imported.
 - The research-readiness panel appears below the source disclosure and shows pass or pending states.
 - Charts are visible and not blank. When filters remove all rows, the chart area shows an empty-state message.
@@ -26,6 +28,7 @@ Use browser developer tools or resize the window below 820px width.
 - The controls panel is no longer sticky and appears above the content.
 - KPI cards, charts, ranking rows, and readiness items stack into one column.
 - The analysis-summary indicator strip stacks cleanly without clipped labels or overlapping values.
+- The table sort control remains tappable and does not overlap the observation-count chip.
 - Long source text wraps inside its container without horizontal page overflow.
 - The table may scroll horizontally inside its own frame, but the whole page should not require sideways scrolling.
 

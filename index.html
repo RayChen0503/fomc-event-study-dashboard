@@ -184,6 +184,10 @@
           <div class="chart-frame">
             <svg id="excessChart" role="img" aria-label="事件後超額報酬長條圖"></svg>
           </div>
+          <div class="chart-notes" aria-label="事件後超額報酬圖例與計算口徑">
+            <p><strong>圖例</strong><span class="legend-swatch positive"></span>正值代表相對大盤較強，<span class="legend-swatch negative"></span>負值代表相對大盤較弱。</p>
+            <p><strong>計算口徑</strong>產業事件窗報酬減臺灣加權指數事件窗報酬，依目前篩選條件平均。</p>
+          </div>
         </article>
         <article class="panel">
           <div class="panel-heading">
@@ -194,6 +198,10 @@
           </div>
           <div class="chart-frame">
             <svg id="drawdownChart" role="img" aria-label="產業最大回撤長條圖"></svg>
+          </div>
+          <div class="chart-notes" aria-label="產業最大回撤圖例與計算口徑">
+            <p><strong>圖例</strong><span class="legend-swatch negative"></span>數值越負代表樣本期間回撤壓力越大。</p>
+            <p><strong>計算口徑</strong>以各產業指數收盤價自前高回落的最大跌幅估算。</p>
           </div>
         </article>
       </section>
@@ -215,6 +223,16 @@
             <p>所有數字由瀏覽器端計算；正式研究前請匯入官方資料。</p>
           </div>
           <div class="table-tools" aria-label="目前表格狀態">
+            <label class="sort-control" for="tableSortSelect">
+              <span>排序依據</span>
+              <select id="tableSortSelect">
+                <option value="date_asc">日期與產業</option>
+                <option value="abs_excess_desc">超額報酬絕對值</option>
+                <option value="excess_desc">超額報酬高到低</option>
+                <option value="excess_asc">超額報酬低到高</option>
+                <option value="sector_asc">產業名稱</option>
+              </select>
+            </label>
             <span class="chip" id="resultCountChip">0 筆觀察值</span>
             <span id="tableScopeDetail">目前視角：T+5 / 全部決策 / 全部類股</span>
           </div>
@@ -232,6 +250,7 @@
                 <th>產業報酬</th>
                 <th>大盤報酬</th>
                 <th>超額報酬</th>
+                <th>來源</th>
               </tr>
             </thead>
             <tbody id="eventTableBody"></tbody>

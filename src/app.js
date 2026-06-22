@@ -11,6 +11,7 @@ import { formatDateTime, formatNumber, formatPercent, formatSignedPercent } from
 import { buildInsightSummary } from "./insights.js";
 import { buildCombinedMetadata } from "./metadata.js";
 import { sampleEvents, sampleMetadata, samplePrices } from "./sample-data.js";
+import { sortEventRows, sourceSummary } from "./table-view.js";
 
 const state = {
   events: sampleEvents,
@@ -19,6 +20,7 @@ const state = {
   selectedWindow: 5,
   decisionFilter: "all",
   sectorFilter: "all",
+  tableSort: "date_asc",
   lastRows: []
 };
 
@@ -54,6 +56,7 @@ const elements = {
   analysisNarrative: document.querySelector("#analysisNarrative"),
   resultCountChip: document.querySelector("#resultCountChip"),
   tableScopeDetail: document.querySelector("#tableScopeDetail"),
+  tableSortSelect: document.querySelector("#tableSortSelect"),
   windowChip: document.querySelector("#windowChip"),
   excessChart: document.querySelector("#excessChart"),
   drawdownChart: document.querySelector("#drawdownChart"),
@@ -192,9 +195,8 @@ function renderTable(rows) {
   }
 
   rows
-    .slice()
-    .sort((a, b) => a.event_date.localeCompare(b.event_date) || a.index_name.localeCompare(b.index_name))
     .forEach((row) => {
+      const source = sourceSummary(row);
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${escapeHtml(row.event_date)}</td>
@@ -206,6 +208,7 @@ function renderTable(rows) {
         <td class="numeric ${valueClass(row.return_rate)}">${formatSignedPercent(row.return_rate)}</td>
         <td class="numeric ${valueClass(row.benchmark_return)}">${formatSignedPercent(row.benchmark_return)}</td>
         <td class="numeric ${valueClass(row.excess_return)}">${formatSignedPercent(row.excess_return)}</td>
+        <td><span class="source-pill" title="${escapeAttr(source.title)}">${escapeHtml(source.label)}</span></td>
       `;
       elements.eventTableBody.appendChild(tr);
     });
@@ -322,8 +325,9 @@ function render() {
     state.decisionFilter === "all" || row.decision_type === state.decisionFilter
   )), state.selectedWindow).filter((item) => state.sectorFilter === "all" || item.index_name === state.sectorFilter);
   const drawdowns = calculateDrawdowns(state.prices).filter((item) => state.sectorFilter === "all" || item.index_name === state.sectorFilter);
+  const sortedRows = sortEventRows(rows, state.tableSort);
 
-  state.lastRows = rows;
+  state.lastRows = sortedRows;
   renderAnalysisBrief(buildInsightSummary({
     rows,
     sensitivity,
@@ -334,7 +338,7 @@ function render() {
   }), rows.length);
   renderKpis(rows, sensitivity, drawdowns);
   renderRanking(sensitivity);
-  renderTable(rows);
+  renderTable(sortedRows);
   renderCharts(rows, drawdowns);
 }
 
@@ -398,8 +402,10 @@ function resetDemo() {
   state.decisionFilter = "all";
   state.sectorFilter = "all";
   state.selectedWindow = 5;
+  state.tableSort = "date_asc";
   elements.windowSelect.value = "5";
   elements.decisionFilter.value = "all";
+  elements.tableSortSelect.value = "date_asc";
   render();
 }
 
@@ -427,8 +433,10 @@ async function loadOfficialDataset() {
     state.decisionFilter = "all";
     state.sectorFilter = "all";
     state.selectedWindow = 5;
+    state.tableSort = "date_asc";
     elements.windowSelect.value = "5";
     elements.decisionFilter.value = "all";
+    elements.tableSortSelect.value = "date_asc";
     render();
     setMessages(["官方資料集已載入；研究可用性檢核若全數通過，即可匯出表格作為分析素材。"]);
   } catch {
@@ -504,6 +512,10 @@ elements.decisionFilter.addEventListener("change", () => {
 });
 elements.sectorFilter.addEventListener("change", () => {
   state.sectorFilter = elements.sectorFilter.value;
+  render();
+});
+elements.tableSortSelect.addEventListener("change", () => {
+  state.tableSort = elements.tableSortSelect.value;
   render();
 });
 elements.resetDemoButton.addEventListener("click", resetDemo);
