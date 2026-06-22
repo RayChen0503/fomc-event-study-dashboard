@@ -23,6 +23,14 @@ Official-source notes are in `docs/official-data-sources.md`. Empty formal templ
 - `data/fomc_events_official_template.csv`
 - `data/twse_sector_prices_official_template.csv`
 
+The first official-source generated dataset is provided at:
+
+- `data/fomc_events_2022_2024_official.csv`
+- `data/generated/twse_sector_prices_2022_2024_official.csv`
+- `data/generated/fomc_event_returns_2022_2024_official.csv`
+- `data/generated/sector_sensitivity_2022_2024_official.csv`
+- `data/generated/official_dataset_metadata.json`
+
 The research-readiness gate blocks formal use until:
 
 - Both required CSV files are imported by the user.
@@ -96,6 +104,12 @@ Run local QA checks:
 
 ```powershell
 node scripts/qa-site.mjs
+```
+
+Regenerate official TWSE-derived datasets:
+
+```powershell
+npm.cmd run build:data
 ```
 
 Run all project scripts on Windows PowerShell:

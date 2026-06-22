@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-06-22T14:05:51.117Z",
+  "eventsSource": "data/fomc_events_2022_2024_official.csv",
+  "outputs": {
+    "prices": "data/generated/twse_sector_prices_2022_2024_official.csv",
+    "eventReturns": "data/generated/fomc_event_returns_2022_2024_official.csv",
+    "sensitivitySummary": "data/generated/sector_sensitivity_2022_2024_official.csv"
+  },
+  "windows": [
+    1,
+    3,
+    5,
+    10
+  ],
+  "sectors": [
+    "TAIEX",
+    "Electronics",
+    "Electronics",
+    "Financials",
+    "Shipping",
+    "Construction"
+  ],
+  "requiredTradingDates": 264,
+  "rows": 1320,
+  "eventReturnRows": 480,
+  "summaryRows": 60,
+  "officialSources": [
+    "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+    "https://www.twse.com.tw/zh/trading/historical/mi-index.html",
+    "https://www.twse.com.tw/zh/indices/taiex/mi-5min-hist.html",
+    "https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date=YYYYMMDD&type=IND",
+    "https://www.twse.com.tw/indicesReport/MI_5MINS_HIST?response=json&date=YYYYMM01"
+  ]
+}

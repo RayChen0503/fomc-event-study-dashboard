@@ -32,10 +32,12 @@ Primary sources:
 
 - TWSE daily market information
 - URL: `https://www.twse.com.tw/zh/trading/historical/mi-index.html`
+- JSON endpoint used by the local builder: `https://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date=YYYYMMDD&type=IND`
 - Use for: sector index close values from daily market reports.
 
 - TWSE TAIEX historical data
 - URL: `https://www.twse.com.tw/zh/indices/taiex/mi-5min-hist.html`
+- JSON endpoint used by the local builder: `https://www.twse.com.tw/indicesReport/MI_5MINS_HIST?response=json&date=YYYYMM01`
 - Use for: TAIEX benchmark close values.
 
 Verified in this project on: `2026-06-22`
@@ -56,3 +58,18 @@ Field rules:
 ## Research Rule
 
 Do not mix demo and official data in the formal paper. The site may calculate with demo data for UI testing, but the research-readiness gate must pass before exported results are used in `肆、研究分析與結果`.
+
+## Generated Dataset
+
+Run:
+
+```powershell
+npm.cmd run build:data
+```
+
+Current generated files:
+
+- `data/generated/twse_sector_prices_2022_2024_official.csv`: 1,320 rows covering 264 Taiwan trading dates and 5 indexes.
+- `data/generated/fomc_event_returns_2022_2024_official.csv`: 480 event-return rows.
+- `data/generated/sector_sensitivity_2022_2024_official.csv`: 60 grouped summary rows.
+- `data/generated/official_dataset_metadata.json`: generation timestamp, selected windows, sectors, and official sources.
