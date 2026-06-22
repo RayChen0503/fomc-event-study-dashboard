@@ -160,6 +160,45 @@ input:focus-visible {
   font-size: 19px;
 }
 
+.side-label,
+.section-label {
+  margin: 0 0 6px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.workflow-list {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.workflow-list li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--surface-soft);
+}
+
+.workflow-list strong,
+.workflow-list span {
+  display: block;
+}
+
+.workflow-list strong {
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.workflow-list span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .field {
   display: grid;
   gap: 7px;
@@ -223,6 +262,49 @@ select {
   display: grid;
   gap: 18px;
   min-width: 0;
+}
+
+.workspace-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr);
+  gap: 18px;
+}
+
+.overview-card,
+.next-step-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.overview-card {
+  align-items: center;
+}
+
+.next-step-card {
+  display: block;
+  border-color: #badfd8;
+  background: #f3faf8;
+}
+
+.overview-card h2,
+.next-step-card h2 {
+  margin-bottom: 6px;
+  font-size: 22px;
+}
+
+.overview-card p,
+.next-step-card p {
+  margin-bottom: 0;
+}
+
+.overview-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .kpi-grid {
@@ -514,8 +596,17 @@ td.numeric {
   }
 
   .kpi-grid,
+  .workspace-overview,
   .chart-grid {
     grid-template-columns: 1fr;
+  }
+
+  .overview-card {
+    display: grid;
+  }
+
+  .overview-actions {
+    justify-content: stretch;
   }
 
   .ranking-item {

@@ -16,8 +16,9 @@
         <p class="lede">分析美國利率決策事件後，臺灣產業類股的短期報酬、相對大盤超額報酬與最大回撤。</p>
       </div>
       <div class="header-actions" aria-label="主要操作">
+        <button class="button primary" id="loadOfficialButton" type="button">載入官方資料集</button>
         <button class="button secondary" id="resetDemoButton" type="button">載入示範資料</button>
-        <button class="button primary" id="exportButton" type="button">匯出事件報酬 CSV</button>
+        <button class="button secondary" id="exportButton" type="button">匯出事件報酬 CSV</button>
       </div>
     </div>
     <section class="status-banner" id="dataStatus" aria-live="polite">
@@ -27,7 +28,22 @@
 
   <main class="dashboard">
     <aside class="controls-panel" aria-labelledby="controlsTitle">
-      <h2 id="controlsTitle">研究設定</h2>
+      <p class="side-label">Research Workflow</p>
+      <h2 id="controlsTitle">研究流程</h2>
+      <ol class="workflow-list">
+        <li>
+          <strong>1. 載入資料</strong>
+          <span>使用內建官方資料，或手動匯入兩份 CSV。</span>
+        </li>
+        <li>
+          <strong>2. 選擇觀察窗</strong>
+          <span>切換 T+1、T+3、T+5、T+10 比較短期反應。</span>
+        </li>
+        <li>
+          <strong>3. 檢查結果</strong>
+          <span>確認 readiness 通過後，再匯出表格寫入小論文。</span>
+        </li>
+      </ol>
       <div class="field">
         <label for="windowSelect">事件觀察窗</label>
         <select id="windowSelect">
@@ -54,11 +70,11 @@
       </div>
       <div class="upload-grid">
         <label class="upload-card">
-          <span>匯入 FOMC 事件 CSV</span>
+          <span>備用：匯入 FOMC 事件 CSV</span>
           <input id="eventsInput" type="file" accept=".csv,text/csv">
         </label>
         <label class="upload-card">
-          <span>匯入產業指數 CSV</span>
+          <span>備用：匯入產業指數 CSV</span>
           <input id="pricesInput" type="file" accept=".csv,text/csv">
         </label>
       </div>
@@ -69,6 +85,25 @@
     </aside>
 
     <section class="content-stack">
+      <section class="workspace-overview" aria-labelledby="workspaceTitle">
+        <article class="panel overview-card">
+          <div>
+            <p class="section-label">Workspace</p>
+            <h2 id="workspaceTitle">研究工作台</h2>
+            <p>先載入官方資料集，確認研究可用性，再依事件窗與決策類型檢視產業反應。</p>
+          </div>
+          <div class="overview-actions">
+            <button class="button primary" id="loadOfficialInlineButton" type="button">載入官方資料集</button>
+            <button class="button secondary" id="exportInlineButton" type="button">匯出目前表格</button>
+          </div>
+        </article>
+        <article class="panel next-step-card">
+          <p class="section-label">下一步</p>
+          <h2 id="nextStepTitle">載入官方資料集</h2>
+          <p id="nextStepDetail">使用第五輪產出的 Fed/TWSE 官方資料，讓分析結果可回頭驗證。</p>
+        </article>
+      </section>
+
       <section class="kpi-grid" aria-label="研究摘要">
         <article class="kpi-card">
           <span class="kpi-label">事件數</span>

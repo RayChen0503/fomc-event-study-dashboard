@@ -7,6 +7,8 @@ Use this checklist after running the automated checks. Browser automation for th
 Open `http://127.0.0.1:65260/`.
 
 - The first screen shows the dashboard title, data status, main actions, research settings, and KPI cards.
+- The first screen also shows `研究工作台`, `下一步`, and a visible `載入官方資料集` action.
+- The left controls read as a guided `研究流程`, not only loose filters.
 - The data status banner clearly says whether the dataset is demo, mixed, or user-imported.
 - The research-readiness panel appears below the source disclosure and shows pass or pending states.
 - Charts are visible and not blank. When filters remove all rows, the chart area shows an empty-state message.
@@ -27,5 +29,6 @@ Use browser developer tools or resize the window below 820px width.
 ## Data States
 
 - Demo data: readiness summary must say the data is not ready for formal conclusions.
+- Official dataset button: clicking `載入官方資料集` should load Fed/TWSE generated CSV files and update the readiness summary.
 - One CSV imported: readiness summary must remain blocked because the dataset is mixed.
 - Both CSV files imported with valid sources and sufficient event-window coverage: readiness summary may pass.

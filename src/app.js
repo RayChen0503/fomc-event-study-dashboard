@@ -26,13 +26,18 @@ const elements = {
   eventCount: document.querySelector("#eventCount"),
   topSensitive: document.querySelector("#topSensitive"),
   worstDrawdown: document.querySelector("#worstDrawdown"),
+  loadOfficialButton: document.querySelector("#loadOfficialButton"),
+  loadOfficialInlineButton: document.querySelector("#loadOfficialInlineButton"),
   windowSelect: document.querySelector("#windowSelect"),
   decisionFilter: document.querySelector("#decisionFilter"),
   sectorFilter: document.querySelector("#sectorFilter"),
   resetDemoButton: document.querySelector("#resetDemoButton"),
   exportButton: document.querySelector("#exportButton"),
+  exportInlineButton: document.querySelector("#exportInlineButton"),
   eventsInput: document.querySelector("#eventsInput"),
   pricesInput: document.querySelector("#pricesInput"),
+  nextStepTitle: document.querySelector("#nextStepTitle"),
+  nextStepDetail: document.querySelector("#nextStepDetail"),
   windowChip: document.querySelector("#windowChip"),
   excessChart: document.querySelector("#excessChart"),
   drawdownChart: document.querySelector("#drawdownChart"),
@@ -93,6 +98,10 @@ function renderReadiness(readiness) {
   elements.readinessSummary.textContent = readiness.ready ? "可作為研究分析資料" : "尚不可作為正式結論";
   elements.readinessSummary.classList.toggle("ok", readiness.ready);
   elements.readinessSummary.classList.toggle("blocked", !readiness.ready);
+  elements.nextStepTitle.textContent = readiness.ready ? "檢視圖表並匯出表格" : "載入官方資料集";
+  elements.nextStepDetail.textContent = readiness.ready
+    ? "資料已通過檢核；可調整事件窗與篩選條件，將表格匯出後整理進分析章。"
+    : "使用第五輪產出的 Fed/TWSE 官方資料，或手動匯入兩份 CSV 後再進行分析。";
   elements.readinessList.innerHTML = readiness.checks.map((check) => (
     `<div class="readiness-item ${escapeAttr(check.status)}">
       <span class="readiness-status">${check.status === "pass" ? "通過" : "待處理"}</span>
@@ -342,6 +351,45 @@ function resetDemo() {
   render();
 }
 
+async function loadOfficialDataset() {
+  try {
+    setMessages(["官方資料集讀取中。"]);
+    const [eventsText, pricesText] = await Promise.all([
+      fetchText("./data/fomc_events_2022_2024_official.csv"),
+      fetchText("./data/generated/twse_sector_prices_2022_2024_official.csv")
+    ]);
+    state.events = parseCsv(eventsText);
+    state.prices = parseCsv(pricesText);
+    state.sources = {
+      events: {
+        source: "Federal Reserve official FOMC statements: data/fomc_events_2022_2024_official.csv",
+        retrievedAt: "Generated from official sources on 2026-06-22",
+        isDemo: false
+      },
+      prices: {
+        source: "TWSE official JSON endpoints: data/generated/twse_sector_prices_2022_2024_official.csv",
+        retrievedAt: "Generated from official sources on 2026-06-22",
+        isDemo: false
+      }
+    };
+    state.decisionFilter = "all";
+    state.sectorFilter = "all";
+    state.selectedWindow = 5;
+    elements.windowSelect.value = "5";
+    elements.decisionFilter.value = "all";
+    render();
+    setMessages(["官方資料集已載入；研究可用性檢核若全數通過，即可匯出表格作為分析素材。"]);
+  } catch {
+    setMessages(["官方資料集讀取失敗。請確認 data/generated 檔案存在，或改用手動 CSV 匯入。"]);
+  }
+}
+
+async function fetchText(url) {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Dataset fetch failed.");
+  return response.text();
+}
+
 function decisionLabel(value) {
   return { hike: "升息", hold: "維持", cut: "降息" }[value] || value;
 }
@@ -407,7 +455,10 @@ elements.sectorFilter.addEventListener("change", () => {
   render();
 });
 elements.resetDemoButton.addEventListener("click", resetDemo);
+elements.loadOfficialButton.addEventListener("click", loadOfficialDataset);
+elements.loadOfficialInlineButton.addEventListener("click", loadOfficialDataset);
 elements.exportButton.addEventListener("click", exportRows);
+elements.exportInlineButton.addEventListener("click", exportRows);
 elements.eventsInput.addEventListener("change", () => handleFileInput(elements.eventsInput, "events"));
 elements.pricesInput.addEventListener("change", () => handleFileInput(elements.pricesInput, "prices"));
 

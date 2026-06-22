@@ -41,6 +41,16 @@ The research-readiness gate blocks formal use until:
 - Each Taiwan index price row has a source label.
 - Every selected event has enough trading days for the configured event windows.
 
+Primary user flow:
+
+1. Open the dashboard.
+2. Click `載入官方資料集`.
+3. Confirm `研究可用性檢核` passes.
+4. Adjust event window, decision type, or sector filters.
+5. Export the event-return table for the paper's analysis section.
+
+Manual CSV import remains available as a backup path for revised datasets.
+
 ## CSV Data Contract
 
 ### FOMC Events CSV

@@ -18,10 +18,46 @@ const scriptFiles = [
 ];
 const scripts = scriptFiles.map((file) => readFileSync(join(root, file), "utf8"));
 const result = runStaticQa({ html, css, scripts });
+const appScript = readFileSync(join(root, "src/app.js"), "utf8");
+const officialEventsPath = "data/fomc_events_2022_2024_official.csv";
+const officialPricesPath = "data/generated/twse_sector_prices_2022_2024_official.csv";
+const officialEventsCsv = readFileSync(join(root, officialEventsPath), "utf8")
+  .trim()
+  .split(/\r?\n/);
+const officialPricesCsv = readFileSync(join(root, officialPricesPath), "utf8")
+  .trim()
+  .split(/\r?\n/);
+const qaFailures = [...result.failures];
 
-if (!result.ok) {
-  console.error(result.failures.join("\n"));
+requireQa(html.includes('id="loadOfficialButton"'), "Header official dataset button is missing.");
+requireQa(html.includes('id="loadOfficialInlineButton"'), "Inline official dataset button is missing.");
+requireQa(html.includes('id="nextStepTitle"'), "Next-step status title is missing.");
+requireQa(
+  appScript.includes(`fetchText("./${officialEventsPath}")`),
+  "Frontend does not fetch the official FOMC events dataset."
+);
+requireQa(
+  appScript.includes(`fetchText("./${officialPricesPath}")`),
+  "Frontend does not fetch the official TWSE sector prices dataset."
+);
+requireQa(
+  officialEventsCsv[0] === "event_id,event_date,decision_type,rate_change_bp,policy_tone,target_rate_lower,target_rate_upper,source",
+  "Official FOMC events CSV header is not compatible with the dashboard."
+);
+requireQa(officialEventsCsv.length > 1, "Official FOMC events CSV has no data rows.");
+requireQa(
+  officialPricesCsv[0] === "date,index_name,close,source",
+  "Official TWSE sector prices CSV header is not compatible with the dashboard."
+);
+requireQa(officialPricesCsv.length > 1, "Official TWSE sector prices CSV has no data rows.");
+
+if (qaFailures.length > 0) {
+  console.error(qaFailures.join("\n"));
   process.exit(1);
 }
 
 console.log("Static QA passed.");
+
+function requireQa(condition, message) {
+  if (!condition) qaFailures.push(message);
+}

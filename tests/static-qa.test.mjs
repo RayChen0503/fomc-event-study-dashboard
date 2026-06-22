@@ -12,6 +12,9 @@ const validHtml = `<!doctype html>
 </head>
 <body>
   <section id="dataStatus" aria-live="polite">資料狀態</section>
+  <section>研究流程</section>
+  <section>下一步</section>
+  <button type="button">載入官方資料集</button>
   <button type="button">匯出事件報酬 CSV</button>
   <svg role="img" aria-label="事件後超額報酬長條圖"></svg>
   <section id="readinessList" aria-live="polite">研究可用性檢核</section>
@@ -64,6 +67,17 @@ test("fails when mobile media query is missing", () => {
 
   assert.equal(result.ok, false);
   assert.match(result.failures.join(" "), /mobile/);
+});
+
+test("fails when guided workflow signals are missing", () => {
+  const result = runStaticQa({
+    html: validHtml.replace("研究流程", "").replace("下一步", "").replace("載入官方資料集", ""),
+    css: validCss,
+    scripts: [""]
+  });
+
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join(" "), /research workflow/);
 });
 
 test("fails when inline event handlers are present", () => {
